@@ -4,7 +4,7 @@ const _ = require(`lodash`);
 const helper = require(`./helper`);
 
 const possibleNumericTypes = [`INTEGER`, `DECIMAL`, `FLOAT`, `DOUBLE`];
-const possibleStringTypes = [`CHARACTER VARYING`, `VARCHAR`];
+const possibleStringTypes = [`VARCHAR`, `TEXT`];
 
 function filterColumns(modelName, config) {
   return _.filter(config.columns, (col) => {
@@ -27,7 +27,9 @@ function charSearch(modelName, modelDesc, config, opt) {
   const matchNames = _(modelDesc)
     .keys()
     .filter((item) => {
-      const isChar = possibleStringTypes.indexOf(modelDesc[item].type) > -1;
+      const isChar = possibleStringTypes.filter(function(type) {
+        return modelDesc[item].type.indexOf(type) > -1;
+      }).length > 0;
 
       return isChar && nameMaps[item] && config.search.value;
     })
